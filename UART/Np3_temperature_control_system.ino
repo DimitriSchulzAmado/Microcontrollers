@@ -1,8 +1,13 @@
+// PINS DEFINE
 #define LED_PIN PD7
 #define BUTTON_ON_PIN PB0
 #define BUTTON_OFF_PIN PB1
 #define ADC_PIN PC4
-#define BAUD_RATE 9600
+
+// UART DEFINE
+#define FOSC 16000000U
+#define BAUD 9600
+#define MYUBRR FOSC/16/BAUD - 1
 
 volatile int temperature;
 volatile float frequency;
@@ -23,19 +28,19 @@ ISR(ADC_vect) {
   }
   
   // Atualiza o registro OCR1A para a frequência correspondente
-  OCR1A = (int)(F_CPU / (1024 * frequency) - 1);
+  OCR1A = (int)(FOSC / (1024 * frequency) - 1);
   
   // Envia os dados pela UART
   char buffer[50];
   sprintf(buffer, "Temperatura: %d°C, Frequência: %.2fHz\n", temperature, frequency);
-  uart_send_string(buffer);
+  UART_transmit(buffer);
 }
 
 // Função para enviar strings pela UART
-void uart_send_string(char* str) {
-  while (*str != '\0') {
+void UART_transmit(char* data) {
+  while (*data != '\0') {
     while (!(UCSR0A & (1<<UDRE0)));
-    UDR0 = *str++;
+    UDR0 = *data++;
   }
 }
 
@@ -75,11 +80,11 @@ int main() {
   EIMSK |= (1 << INT0) | (1 << INT1); // Habilita interrupção externa para INT0 e INT1
   
   // Configuração UART
-  uint16_t ubrr = F_CPU/16/BAUD_RATE-1;
-  UBRR0H = (uint8_t)(ubrr>>8);
-  UBRR0L = (uint8_t)ubrr;
-  UCSR0B = (1<<RXEN0)|(1<<TXEN0);
-  UCSR0C = (1<<UCSZ01)|(1<<UCSZ00); // Configuração para 8 bits de dados, 1 stop bit
+  uint16_t ubrr = MYUBRR;
+  UBRR0H = (uint8_t)(ubrr >> 8);
+  UBRR0L = (uint8_t) ubrr;
+  UCSR0B = (1 << RXEN0) | (1 << TXEN0);
+  UCSR0C = (1 << UCSZ01) | (1 << UCSZ00); // Configuração para 8 bits de dados, 1 stop bit
 
   sei(); // Habilita interrupções globais
 

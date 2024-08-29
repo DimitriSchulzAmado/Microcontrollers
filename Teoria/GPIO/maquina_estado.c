@@ -19,36 +19,34 @@ int main(void)
 
     char estado = 0;
 
-    while (1)
-    {
-        switch (estado)
-        {
-        case PORTAO_ABERTO:
-            PORTD |= SF | SA | CF | CA;
-            if (!(PIND & CONTROLE == 0)) {
-                estado = PORTAO_FECHANDO;
-            }
-            break;
-        case PORTAO_FECHADO:
-            PORTD |= SF | SA | CF | CA;
-            if (!(PIND & CONTROLE == 0)) {
-                estado = PORTAO_ABRINDO;
-            }
-            break;
-        case PORTAO_FECHANDO:
-            PORTD ^= MF; // Muda o estado do motor
-            if (!(PIND & SENSOR == 0)) {
-                estado = PORTAO_FECHADO;
-            }
-            break;
-        case PORTAO_ABRINDO:
-            PORTD ^= MA; // Muda o estado do motor
-            if (!PIND & SENSOR == 0) {
-                estado = PORTAO_ABERTO;
-            }
-            break;
-        default:
-            break;
+    while (1) {
+        switch (estado) {
+            case PORTAO_ABERTO:
+                PORTD |= SF | SA | CF | CA;
+                if (!(PIND & CONTROLE == 0)) {
+                    estado = PORTAO_FECHANDO;
+                }
+                break;
+            case PORTAO_FECHADO:
+                PORTD |= SF | SA | CF | CA;
+                if (!(PIND & CONTROLE == 0)) {
+                    estado = PORTAO_ABRINDO;
+                }
+                break;
+            case PORTAO_FECHANDO:
+                PORTD ^= MF; // Muda o estado do motor
+                if (!(PIND & SENSOR == 0)) {
+                    estado = PORTAO_FECHADO;
+                }
+                break;
+            case PORTAO_ABRINDO:
+                PORTD ^= MA; // Muda o estado do motor
+                if (!PIND & SENSOR == 0) {
+                    estado = PORTAO_ABERTO;
+                }
+                break;
+            default:
+                break;
         }
     }
 }

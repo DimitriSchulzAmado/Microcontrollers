@@ -14,7 +14,7 @@ int main(void) {
     DDRD &= ~BUTTON; // Define o pino como entrada
 
     while (1) {
-        if (!(PIND & BUTTON != 0)) {
+        if (PIND & BUTTON != 0) {
             PORTD |= LED;
         }
     }

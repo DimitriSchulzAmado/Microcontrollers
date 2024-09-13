@@ -59,8 +59,8 @@ int main() {
 
 		//Todos ligados problema - todos os leds (ok)
 		if ((botaoA == 0) && (botaoB == 0) && (botaoC == 0)) {
-			PORTD |= MOTOR2;
 			PORTD |= MOTOR3;
+			PORTD &= ~MOTOR2;
 			PORTD &= ~MOTOR1;
 		}
 		//cores led - cor diferente, vermelho (ok)
@@ -71,7 +71,7 @@ int main() {
 		}
 
 		//cores led - cor amarela (ok)
-			else if (botaoA == 0 && botaoC == 0) {
+		else if (botaoA == 0 && botaoC == 0) {
 			PORTD |= MOTOR3;
 			PORTD &= ~MOTOR1;
 			PORTD &= ~MOTOR2;

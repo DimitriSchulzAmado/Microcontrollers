@@ -52,9 +52,7 @@ int main()
     while (1) {
         // Configure the reading PINO
         ADMUX = (ADMUX & 0xF8) + PINO; // Hold on the first 5 left pins and just change 3 da direita
-
-        // Start conversion
-        ADCSRA |= (1 << ADSC);
+        ADCSRA |= (1 << ADSC); // Start conversion
 
         // Wait finished conversion
         while ((ADCSRA & (1 << ADSC)) == (1 << ADSC));
